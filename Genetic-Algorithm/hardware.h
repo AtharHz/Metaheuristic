@@ -12,10 +12,6 @@ SC_MODULE(hardware) {
     sc_out<float> fitness;
 
     void start(){
-        // cout << "hi\n";
-        // int w=totalW.read();
-        // cout<< "hello\n";
-        // cout << "ine" << w;
         int w=10;
         bool same=false;
         int endCounter=0;
@@ -51,12 +47,6 @@ SC_MODULE(hardware) {
             } 
         }
 
-        for (int i = 0; i < 10 ; i++){
-            for (int j = 0; j < 9 ; j++) { 
-                // cout << population[i][j] << "\t     "; 
-            } 
-            // cout << "\n";
-        }
 
         for(int j=0;j<50;j++){
             cout << "\ncounter :" << endCounter << endl;
@@ -101,10 +91,6 @@ SC_MODULE(hardware) {
         if(totalWeight<=w){
             feasible=true;
         }
-        // cout << "w" << w <<"\n";
-        // cout << "checking\n";
-        // cout << totalWeight << "\n";
-        // cout << feasible << "\n";
         return feasible;
     }
 
@@ -125,7 +111,6 @@ SC_MODULE(hardware) {
     void calculateFitness(float population[10][9],int price[9],int weight[9],float fitness[]){
         for(int i=0;i<10;i++){
             for(int j=0;j<9;j++){
-                // fitness[i]+=population[i][j]*price[j]
                 fitness[i]+=population[i][j]*price[j];
             }
         }
@@ -136,20 +121,11 @@ SC_MODULE(hardware) {
         float tempFit[10];
         for(int i=0;i<10;i++){
             tempFit[i]=fitness[i];
-            // cout << "i " << i << "\n";
-            // cout << "temp " << tempFit[i] << "\n";
-            // cout << "fit " << fitness[i] << "\n";
             for(int j=0;j<9;j++){
                 tempPop[i][j]=population[i][j];
             }
         }
         
-        std::sort(tempFit, end(tempFit), std::greater<float>());
-        // cout << "sorted\n";
-        for(int i=0;i<10;i++){
-            // cout<< tempFit[i] << "\t";
-        }
-        // cout << "\n";
 
 
         int num=0;
@@ -158,30 +134,17 @@ SC_MODULE(hardware) {
                 if(tempFit[num]==fitness[i]){
                     for(int j=0;j<9;j++){
                         population[num][j]=tempPop[i][j];
-                        // cout << "here" ;
-                        // cout << population[num][j] << "\n";
                     }
                     num++;
-                    // cout<< "num" << num << "\t";
                     break;
                 }
             }
         }
-
-        // cout << "sorted pop\n";
-        // for (int i = 0; i < 10 ; i++){
-        //     for (int j = 0; j < 9 ; j++) { 
-        //         cout << population[i][j] << "\t    "; 
-        //     } 
-        //     cout << "\n";
-        // }
-
     }
 
     void mutation(float chorom[9],float vars[],default_random_engine generator,normal_distribution<double> distribution){
         
         double number = distribution(generator);
-        // cout << "numbereeeeeee" << number << "\n";
         for(int j=0;j<9;j++){
             number = distribution(generator);
             chorom[j]+=vars[j]*number;
@@ -190,7 +153,6 @@ SC_MODULE(hardware) {
             }else if(chorom[j]>1){
                 chorom[j]=1;
             }
-            // cout << population[i][j] << "\t";
         }
     }
 
@@ -198,7 +160,6 @@ SC_MODULE(hardware) {
         int crossPoint=(rand() % 9);
         float firstChild[9];
         float secondChild[9];
-        // cout << "printing the crossover point" << crossPoint<< "\n";
         for(int i=0;i<9;i++){
             if(i<crossPoint){
                 newPopulation[10+newGeneration][i]=firstPar[i];
@@ -213,13 +174,6 @@ SC_MODULE(hardware) {
             mutation(newPopulation[10+newGeneration],vars,generator,distribution);
             mutation(newPopulation[10+newGeneration+1],vars,generator,distribution);
         }
-        // cout << "new population\n";
-        // for (int i = 0; i < 20 ; i++){
-        //     for (int j = 0; j < 9 ; j++) { 
-        //         cout << newPopulation[i][j] << "\t     "; 
-        //     } 
-        //     cout << "\n";
-        // }
         newGeneration+=2;
         }
 
@@ -234,15 +188,6 @@ SC_MODULE(hardware) {
                 firstPar[j]=population[chosen1][j];
                 secondPar[j]=population[chosen2][j];
             }
-            // for(int i=0;i<9;i++){
-            //     cout << firstPar[i] << "\t";
-            // }
-            // cout << "\n";
-            // for(int i=0;i<9;i++){
-            //     cout << secondPar[i] << "\t";
-            // }
-            // cout << "heeewwwy \n";
-            // cout << "printing the base to see whether it has changed" << base << "\n";
             float pco=((double) rand() / (RAND_MAX));
             if(pco>0.1){
                 crossover(firstPar,secondPar,newPopulation,vars,newGeneration,generator,distribution);
@@ -264,19 +209,11 @@ SC_MODULE(hardware) {
         float tempFit[20];
         for(int i=0;i<20;i++){
             tempFit[i]=fitness2[i];
-            // cout << "i " << i << "\n";
-            // cout << "temp " << tempFit[i] << "\n";
-            // cout << "fit " << fitness2[i] << "\n";
             for(int j=0;j<9;j++){
                 tempPop[i][j]=newPopulation[i][j];
             }
         }
         std::sort(tempFit, end(tempFit), std::greater<float>());
-        // cout << "sorted\n";
-        // for(int i=0;i<20;i++){
-        //     cout<< tempFit[i] << "\t";
-        // }
-
 
         int num=0;
         while(num!=20){
@@ -284,39 +221,23 @@ SC_MODULE(hardware) {
                 if(tempFit[num]==fitness2[i]){
                     for(int j=0;j<9;j++){
                         newPopulation[num][j]=tempPop[i][j];
-                        // cout << "here" ;
-                        // cout << newPopulation[num][j] << "\n";
                     }
                     num++;
-                    // cout<< "num" << num << "\t";
                     break;
                 }
             }
         }
-
-        // for (int i = 0; i < 20 ; i++){
-        //     for (int j = 0; j < 9 ; j++) { 
-        //         cout << newPopulation[i][j] << "\t     "; 
-        //     } 
-        //     cout << "\n";
-        // }
-        // std::sort(fitness2, end(fitness2), std::greater<float>());
     }
 
     void chooseNextGeneration(float newPopulation[20][9],float population[10][9]){
-        // cout << "next generation\n";
         for(int i=0;i<10;i++){
             for(int j=0;j<9;j++){
                 population[i][j]=newPopulation[i][j];
-                // cout << population[i][j] << "\t     ";
             }
-            // cout << "\n";
         }
     }
 
     void updateVariance(float vars[],default_random_engine generator,normal_distribution<double> distribution){
-        // std::default_random_engine generator;
-        // std::normal_distribution<double> distribution(0,1);
         double numCons = distribution(generator);
         for(int i=0;i<9;i++){
             double number=distribution(generator);
@@ -332,29 +253,14 @@ SC_MODULE(hardware) {
         float fitness2[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         cout << "\n iterate begin \n";
         calculateFitness(population,price,weight,fitness);
-        // for (int j = 0; j < 10 ; j++) { 
-        //     cout << fitness[j] << "\t"; 
-        // } 
-        // cout << "\n";
+
 
         sortingChoroms(population,fitness);
         parentSelection(population,newPopulation,var,newGeneration,generator,distribution);
-        // cout << "new population\n";
-        // for (int i = 0; i < 20 ; i++){
-        //     for (int j = 0; j < 9 ; j++) { 
-        //         cout << newPopulation[i][j] << "\t     "; 
-        //     } 
-        //     cout << "\n";
-        // }
-        // cout << "next step\n" ;
+
         newGeneration=0;
         repair(newPopulation,weight,w);
         calculateFitnessForNextGeneration(newPopulation,price,weight,fitness2);
-        // cout << "Fitness :\n";
-        // for (int j = 0; j < 20 ; j++) { 
-        //     cout << fitness2[j] << "\t"; 
-        // } 
-        // cout << "\n";
         sortAllChorms(newPopulation,fitness2);
         chooseNextGeneration(newPopulation,population);
         updateVariance(var,generator,distribution);
